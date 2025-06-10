@@ -9,8 +9,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5004;
 
-// Middleware
-app.use(cors());
+// CORS configuration
+const corsOptions = {
+  origin: 'https://dg.peghouse.in',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: 'Content-Type,Authorization'
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
@@ -18,7 +24,10 @@ const contactRoutes = require('./routes/contactRoutes');
 app.use('/api', contactRoutes);
 
 // DB Connection
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
   .then(() => console.log('✅ MongoDB connected'))
   .catch((err) => console.error('❌ MongoDB connection error:', err.message));
 
